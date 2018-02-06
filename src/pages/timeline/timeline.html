@@ -1,0 +1,45 @@
+
+<ion-header>
+    <ion-navbar color="primary">
+      <ion-title>
+        {{order.par1}}
+      </ion-title>
+    </ion-navbar>
+</ion-header>
+  
+  
+<ion-content padding>
+  
+  <ion-card>
+    <ion-card-content>
+      <ion-card-title>
+        Processed time
+      </ion-card-title>
+      <ion-list>
+        <ion-item text-wrap *ngFor="let time of order.timeE; let i=index">
+          <ion-row>
+            <ion-col>
+              {{order.timeS[i] | date: 'dd/MM/yy H:mm' }} <br />to <br />{{time | date: 'dd/MM/yy H:mm'}}
+            </ion-col>
+            <ion-col col-auto>
+              <button ion-button small (click)="deleteTime(i)" color="danger">
+                <ion-icon name="close"></ion-icon>
+              </button>
+            </ion-col>
+          </ion-row>
+        </ion-item>
+      </ion-list>
+      <button ion-button (click)="showChart()">Chart</button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-row>
+    <ion-col>
+      <button ion-button block disabled="{{bDis}}" (click)="changeTimeOrder()">{{bLabel}}</button>
+    </ion-col>
+    <ion-col>
+      <button ion-button block (click)="finishOrder()">Finish</button>
+    </ion-col>  
+  </ion-row>
+  
+</ion-content>

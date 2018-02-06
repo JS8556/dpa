@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>
+      {{nameUser}}
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+
+
+  <ion-list>
+    <ion-item *ngFor="let order of user.orders">
+        <h2>{{order.par1}}</h2>
+        <button ion-button small item-end (click)="deleteOrder(order)" color="danger">
+          <ion-icon name="close"></ion-icon>
+        </button>
+        <h3>{{order.par2}}</h3>
+        <p>
+        <button ion-button item-right (click)="detailsOrder(order)">Details</button>
+        <button ion-button item-left (click)="timelineOrder(order)">Timeline</button>
+        </p>
+      </ion-item>
+  </ion-list>
+
+  <button ion-button block (click)="scanCode()">Scan</button>
+
+</ion-content>
