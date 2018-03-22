@@ -1,5 +1,12 @@
 page-home {
-    .va {
-        vertical-align: middle;
+    ion-input{
+        border: 1px solid #91BAC8;
+        background: white;
+    }
+    .loginForm {
+        margin-top: 40%;
+        }
+    .background-color {
+        background: color($colors,light);
     }
 }

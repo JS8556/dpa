@@ -8,11 +8,12 @@
 </ion-header>
 -->
 
-<ion-content class="va" padding>
-  <ion-list>    
-    <ion-item>
+<ion-content padding class="background-color">
+  <div class="loginForm">
       <ion-input #id type="text" placeholder="ID"></ion-input>
-    </ion-item>
-  </ion-list>
-  <button (click)="login(id.value)" ion-button full>Login</button>
+      <button (click)="login(id.value)" ion-button full>Login</button>
+  </div>
+    
+
+  
 </ion-content>

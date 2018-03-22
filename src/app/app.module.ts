@@ -7,7 +7,9 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { Dialogs } from '@ionic-native/dialogs';
 import { QRScanner } from '@ionic-native/qr-scanner';
 import { HttpModule } from '@angular/http';
+import { IonicStorageModule } from '@ionic/storage';
 import { LoginService } from './services/login.service'
+import { Network } from '@ionic-native/network';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
@@ -20,6 +22,7 @@ import { ChartModule } from 'angular2-highcharts';
 import * as HighCharts from 'highcharts';
 import * as HighchartsMore from 'highcharts-more';
 import * as XRange from 'highcharts/modules/xrange';
+import { ObjStorageProvider } from '../providers/obj-storage/obj-storage';
 HighchartsMore(HighCharts);
 XRange(HighCharts);
 
@@ -36,7 +39,8 @@ XRange(HighCharts);
     BrowserModule,
     HttpModule,
     ChartModule.forRoot(HighCharts, HighchartsMore, XRange),
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -52,8 +56,10 @@ XRange(HighCharts);
     SplashScreen,
     Dialogs,
     QRScanner,
+    Network,
     LoginService,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    ObjStorageProvider
   ]
 })
 export class AppModule {}

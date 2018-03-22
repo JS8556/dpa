@@ -1,3 +1,8 @@
 page-main {
-    
+    .background-color {
+        background: color($colors,light);
+    }
+    ion-list{
+        border: 1px solid #91BAC8;
+    }
 }

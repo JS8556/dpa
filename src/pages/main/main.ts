@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { Dialogs } from '@ionic-native/dialogs';
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner';
+import { ObjStorageProvider } from '../../providers/obj-storage/obj-storage';
+
 
 import { DetailsPage } from '../details/details';
 import { TimelinePage } from '../timeline/timeline';
@@ -21,7 +23,7 @@ export class MainPage {
 
   private zone:any;  
 
-  constructor(public navCtrl: NavController, private dialogs:Dialogs, public params:NavParams, private qrScanner: QRScanner) {
+  constructor(public navCtrl: NavController, private dialogs:Dialogs, public params:NavParams, private qrScanner: QRScanner, private storageProvider: ObjStorageProvider) {
     this.user = params.get('user');
     this.nameUser = this.user.name + ' ' + this.user.surname;
     this.zone = new NgZone({ enableLongStackTrace: false });
@@ -35,7 +37,8 @@ export class MainPage {
 
   timelineOrder(order){
     this.navCtrl.push(TimelinePage, {
-      order:order
+      order:order,
+      user:this.user
     });
   }
 
@@ -66,6 +69,7 @@ export class MainPage {
             if(bId == 1){
               this.zone.run(() => {
                 this.user.orders.push(this.scanOrder);
+                this.storageProvider.addObj(this.user.id, this.user);
               });
               
             }
@@ -96,6 +100,7 @@ export class MainPage {
     this.zone.run(() => {
       this.user.orders = this.user.orders.filter(obj => obj !== order);
     });
+    this.storageProvider.deleteObj(this.user.id, this.user);
   }
 
 }

@@ -2,4 +2,9 @@ page-timeline {
     .card .list .item {
         border-top: 1px solid #91BAC8;
     }
+
+    .background-color {
+        background: color($colors,light);
+    }
+
 }

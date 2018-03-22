@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { Dialogs } from '@ionic-native/dialogs';
 import { TimechartPage } from '../timechart/timechart';
+import { ObjStorageProvider } from '../../providers/obj-storage/obj-storage';
 
 import { NgZone } from '@angular/core';
 
@@ -17,11 +18,13 @@ export class TimelinePage {
   private eTime:Date;
   private data:any[];
   private bDis:any;
+  private user:any;
 
   private zone:any;
 
-  constructor(public navCtrl: NavController, private dialogs:Dialogs, public params:NavParams) {
+  constructor(public navCtrl: NavController, private dialogs:Dialogs, public params:NavParams, private storageProvider: ObjStorageProvider) {
     this.order = params.get('order');
+    this.user = params.get('user');
     this.setBLabel();
     this.zone = new NgZone({ enableLongStackTrace: false });
     if (this.order.finished == 0) {
@@ -40,6 +43,14 @@ export class TimelinePage {
     }
   }
 
+  colorChangeFinished(){
+    if(this.order.timeS.length == this.order.timeE.length){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
   changeTimeOrder(){
     this.zone.run(() => {
       if(this.order.timeS.length == this.order.timeE.length){
@@ -52,6 +63,7 @@ export class TimelinePage {
     });
     
     this.setBLabel();
+    this.storageProvider.changeObj(this.user.id, this.user);
   }
 
   showChart(){
@@ -59,8 +71,8 @@ export class TimelinePage {
     for (var index = 0; index < this.order.timeE.length; index++) {
       this.data.push(
         {
-          x: this.order.timeS[index].getTime(),
-          x2: this.order.timeE[index].getTime(),
+          x: new Date(this.order.timeS[index]).getTime(),
+          x2: new Date(this.order.timeE[index]).getTime(),
           y: 0,
           partialFill: 1
         }
@@ -85,6 +97,7 @@ export class TimelinePage {
         }
         this.order.finished = 1;
         this.bDis = true;
+        this.storageProvider.changeObj(this.user.id, this.user);
       });
         
     });
@@ -98,7 +111,7 @@ export class TimelinePage {
       this.order.timeS.splice(i, 1);
       this.order.timeE.splice(i, 1);
     });
-    
+    this.storageProvider.changeObj(this.user.id, this.user);
 
   }
 

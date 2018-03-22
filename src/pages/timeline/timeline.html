@@ -8,7 +8,7 @@
 </ion-header>
   
   
-<ion-content padding>
+<ion-content padding class="background-color">
   
   <ion-card>
     <ion-card-content>
@@ -16,10 +16,10 @@
         Processed time
       </ion-card-title>
       <ion-list>
-        <ion-item text-wrap *ngFor="let time of order.timeE; let i=index">
+        <ion-item text-wrap *ngFor="let time of order.timeS; let i=index" [color]="order?.timeE[i] ? 'tgreen' : 'tyellow'">
           <ion-row>
             <ion-col>
-              {{order.timeS[i] | date: 'dd/MM/yy H:mm' }} <br />to <br />{{time | date: 'dd/MM/yy H:mm'}}
+              {{time | date: 'dd/MM/yy H:mm' }} <br />to <br /><div *ngIf="order?.timeE[i]">{{order.timeE[i] | date: 'dd/MM/yy H:mm' }}</div>
             </ion-col>
             <ion-col col-auto>
               <button ion-button small (click)="deleteTime(i)" color="danger">

@@ -7,9 +7,9 @@
 </ion-header>
 
 
-<ion-content padding>
+<ion-content class="background-color">
 
-
+<!--
   <ion-list>
     <ion-item *ngFor="let order of user.orders">
         <h2>{{order.par1}}</h2>
@@ -23,7 +23,37 @@
         </p>
       </ion-item>
   </ion-list>
+-->
 
-  <button ion-button block (click)="scanCode()">Scan</button>
+  <ion-list>
+    <ion-item-sliding *ngFor="let order of user.orders">
+        <ion-item>
+          <h2>{{order.par1}}</h2>
+            
+          <h3>{{order.par2}}</h3>
+        </ion-item>
+        
+        <ion-item-options side="right">
+          <button ion-button (click)="deleteOrder(order)" color="danger">
+            <ion-icon name="trash"></ion-icon>
+            DELETE
+          </button>
+        </ion-item-options>
+        <ion-item-options side="left">
+          <button ion-button (click)="detailsOrder(order)" color="cblue">
+            <ion-icon name="information"></ion-icon>
+            INFO
+          </button>
+          <button ion-button (click)="timelineOrder(order)" color="cgreen">
+            <ion-icon name="clock"></ion-icon>
+            PROCESS
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>     
+  </ion-list>
 
+  <button ion-button full (click)="scanCode()" color="primary">
+    <!--<ion-icon name="add"></ion-icon>-->
+    SCAN
+  </button>
 </ion-content>
