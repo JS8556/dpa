@@ -4,6 +4,7 @@ import { LoginService } from '../../app/services/login.service';
 import { ObjStorageProvider } from '../../providers/obj-storage/obj-storage';
 import { Dialogs } from '@ionic-native/dialogs';
 import { Network } from '@ionic-native/network';
+import { WebDataProvider } from '../../providers/web-data/web-data';
 
 import { MainPage } from '../main/main';
 
@@ -15,8 +16,22 @@ export class HomePage {
 
   private id:string = '';
   private user:any;
-  constructor(public navCtrl: NavController, private loginService:LoginService, private dialogs:Dialogs, private network: Network, private storageProvider: ObjStorageProvider) {
+  private ordersSync:any[];
+  constructor(public navCtrl: NavController, private loginService:LoginService, private dialogs:Dialogs, private network: Network, private storageProvider: ObjStorageProvider, private WDProvider: WebDataProvider) {
 
+  }
+
+
+  ionViewDidEnter(){
+    this.storageProvider.getToSync().then((val:any) => {
+      this.ordersSync = val;
+      if(this.ordersSync.length > 0)
+      {
+        this.dialogs.alert('Unsynchronized data, wait for synchronization')
+        .then(() => console.log('Unsynchronized data'));
+        this.WDProvider.postUsersSync(this.ordersSync);
+      }
+    });
   }
 
   login(id){
@@ -29,7 +44,7 @@ export class HomePage {
         this.user = response;
   
         if(this.user.id != null){     
-          this.dialogs.confirm('Welcome ' + this.user.name + ' ' + this.user.surname, 'Confirm', ['OK'])
+          this.dialogs.confirm('Welcome ' + this.user.firstname + ' ' + this.user.surname, 'Confirm', ['OK'])
           .then(() => {
             console.log('OK ID');
             this.navCtrl.push(MainPage, {
@@ -49,7 +64,7 @@ export class HomePage {
         console.log(val);
         this.user = val;
         
-        this.dialogs.confirm('Welcome ' + this.user.name + ' ' + this.user.surname, 'Confirm', ['OK'])
+        this.dialogs.confirm('Welcome ' + this.user.firstname + ' ' + this.user.surname, 'Confirm', ['OK'])
         .then(() => {
           console.log('OK ID');
           this.navCtrl.push(MainPage, {
@@ -64,6 +79,20 @@ export class HomePage {
 
   }
 
+  login1(id){
+    this.WDProvider.getUser(id)
+    .then(data => {
+      this.user = data;
+      console.log(this.user);
+      this.dialogs.confirm('Welcome ' + this.user.name + ' ' + this.user.surname, 'Confirm', ['OK'])
+      .then(() => {
+        console.log('OK ID');
+        this.navCtrl.push(MainPage, {
+          user:this.user
+        });
+      });
+    });
+  }
 
   isConnected(): boolean {
     let conntype = this.network.type;

@@ -3,7 +3,8 @@ import { NavController, NavParams } from 'ionic-angular';
 import { Dialogs } from '@ionic-native/dialogs';
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner';
 import { ObjStorageProvider } from '../../providers/obj-storage/obj-storage';
-
+import { WebDataProvider } from '../../providers/web-data/web-data';
+import { Network } from '@ionic-native/network';
 
 import { DetailsPage } from '../details/details';
 import { TimelinePage } from '../timeline/timeline';
@@ -23,9 +24,9 @@ export class MainPage {
 
   private zone:any;  
 
-  constructor(public navCtrl: NavController, private dialogs:Dialogs, public params:NavParams, private qrScanner: QRScanner, private storageProvider: ObjStorageProvider) {
+  constructor(public navCtrl: NavController, private dialogs:Dialogs, public params:NavParams, private qrScanner: QRScanner, private storageProvider: ObjStorageProvider, private network: Network, private WDProvider: WebDataProvider) {
     this.user = params.get('user');
-    this.nameUser = this.user.name + ' ' + this.user.surname;
+    this.nameUser = this.user.firstname + ' ' + this.user.surname;
     this.zone = new NgZone({ enableLongStackTrace: false });
   }
 
@@ -64,13 +65,35 @@ export class MainPage {
           scanSub.unsubscribe(); // stop scanning
           //ionApp.style.display = 'block';
 
-          this.dialogs.confirm('Order: ' + this.scanOrder.par1 + ' ' + this.scanOrder.par2, 'Confirm', ['OK', 'Cancel'])
+          this.dialogs.confirm('Order: ' + this.scanOrder.name + ' ' + this.scanOrder.customer, 'Confirm', ['OK', 'Cancel'])
           .then((bId) => {
             if(bId == 1){
-              this.zone.run(() => {
-                this.user.orders.push(this.scanOrder);
-                this.storageProvider.addObj(this.user.id, this.user);
-              });
+              //kontrola jestli uz zakazka neni zpracovavana uzivatelem
+              let index = this.user.orders.findIndex(x => x.id == this.scanOrder.id);
+              //pokud neni tak
+              if(index > -1){
+                this.zone.run(() => {
+                  this.user.orders.push(this.scanOrder);
+                  this.storageProvider.addObj(this.user.id, this.user);                
+                });
+  
+                let orderProc = {
+                  order_id: this.scanOrder.id,
+                  user_id: this.user.id,
+                  finished: 0,
+                  displayed: 1,
+                  timeS: [],
+                  timeE: []
+                };
+                if(this.isConnected()){
+                  this.WDProvider.postUser(orderProc);
+                }else{
+                  this.storageProvider.setToSync(orderProc);
+                }
+              }else{//pokuj ji uz uzivatel zpracovava
+                this.dialogs.alert('You are already processing this order')
+                .then(() => console.log('You are already processing this order'));
+              }
               
             }
           });
@@ -101,6 +124,25 @@ export class MainPage {
       this.user.orders = this.user.orders.filter(obj => obj !== order);
     });
     this.storageProvider.deleteObj(this.user.id, this.user);
+
+    let orderProc = {
+      order_id: this.scanOrder.id,
+      user_id: this.user.id,
+      finished: 0,
+      displayed: 0,
+      timeS: [],
+      timeE: []
+    };
+    if(this.isConnected()){
+      this.WDProvider.postUser(orderProc);
+    }else{
+      this.storageProvider.setToSync(orderProc);
+    }
+  }
+
+  isConnected(): boolean {
+    let conntype = this.network.type;
+    return conntype && conntype !== 'unknown' && conntype !== 'none';
   }
 
 }

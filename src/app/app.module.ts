@@ -10,6 +10,7 @@ import { HttpModule } from '@angular/http';
 import { IonicStorageModule } from '@ionic/storage';
 import { LoginService } from './services/login.service'
 import { Network } from '@ionic-native/network';
+import { HttpClientModule } from '@angular/common/http';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
@@ -23,6 +24,7 @@ import * as HighCharts from 'highcharts';
 import * as HighchartsMore from 'highcharts-more';
 import * as XRange from 'highcharts/modules/xrange';
 import { ObjStorageProvider } from '../providers/obj-storage/obj-storage';
+import { WebDataProvider } from '../providers/web-data/web-data';
 HighchartsMore(HighCharts);
 XRange(HighCharts);
 
@@ -38,6 +40,7 @@ XRange(HighCharts);
   imports: [
     BrowserModule,
     HttpModule,
+    HttpClientModule,
     ChartModule.forRoot(HighCharts, HighchartsMore, XRange),
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot()
@@ -59,7 +62,8 @@ XRange(HighCharts);
     Network,
     LoginService,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    ObjStorageProvider
+    ObjStorageProvider,
+    WebDataProvider
   ]
 })
 export class AppModule {}
