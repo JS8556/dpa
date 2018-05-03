@@ -3,6 +3,8 @@ import { NavController, NavParams } from 'ionic-angular';
 import { Dialogs } from '@ionic-native/dialogs';
 import { TimechartPage } from '../timechart/timechart';
 import { ObjStorageProvider } from '../../providers/obj-storage/obj-storage';
+import { WebDataProvider } from '../../providers/web-data/web-data';
+import { Network } from '@ionic-native/network';
 
 import { NgZone } from '@angular/core';
 
@@ -22,7 +24,7 @@ export class TimelinePage {
 
   private zone:any;
 
-  constructor(public navCtrl: NavController, private dialogs:Dialogs, public params:NavParams, private storageProvider: ObjStorageProvider) {
+  constructor(public navCtrl: NavController, private dialogs:Dialogs, public params:NavParams, private storageProvider: ObjStorageProvider, private network: Network, private WDProvider: WebDataProvider) {
     this.order = params.get('order');
     this.user = params.get('user');
     this.setBLabel();
@@ -60,10 +62,23 @@ export class TimelinePage {
         this.eTime = new Date();
         this.order.timeE.push(this.eTime);
       }
-    });
-    
+    });   
     this.setBLabel();
     this.storageProvider.changeObj(this.user.id, this.user);
+
+    let orderProc = {
+      order_id: this.order.id,
+      user_id: this.user.id,
+      finished: 0,
+      displayed: 1,
+      timeS: this.prepareTimes(this.order.timeS),
+      timeE: this.prepareTimes(this.order.timeE)
+    };
+    if(this.isConnected()){
+      this.WDProvider.postUser(orderProc);
+    }else{
+      this.storageProvider.setToSync(orderProc);
+    }
   }
 
   showChart(){
@@ -99,7 +114,20 @@ export class TimelinePage {
         this.bDis = true;
         this.storageProvider.changeObj(this.user.id, this.user);
       });
-        
+
+      let orderProc = {
+        order_id: this.order.id,
+        user_id: this.user.id,
+        finished: 1,
+        displayed: 1,
+        timeS: this.prepareTimes(this.order.timeS),
+        timeE: this.prepareTimes(this.order.timeE)
+      };
+      if(this.isConnected()){
+        this.WDProvider.postUser(orderProc);
+      }else{
+        this.storageProvider.setToSync(orderProc);
+      }  
     });
     
   }
@@ -109,10 +137,41 @@ export class TimelinePage {
     alert('Deleting time');
     this.zone.run(() => {
       this.order.timeS.splice(i, 1);
-      this.order.timeE.splice(i, 1);
+      if(typeof this.order.timeE[i] === 'undefined') {
+      }
+      else {
+        this.order.timeE.splice(i, 1);
+      }      
     });
     this.storageProvider.changeObj(this.user.id, this.user);
 
+    let orderProc = {
+      order_id: this.order.id,
+      user_id: this.user.id,
+      finished: 0,
+      displayed: 1,
+      timeS: this.prepareTimes(this.order.timeS),
+      timeE: this.prepareTimes(this.order.timeE)
+    };
+    if(this.isConnected()){
+      this.WDProvider.postUser(orderProc);
+    }else{
+      this.storageProvider.setToSync(orderProc);
+    }
+
+  }
+
+  prepareTimes(times:any[]){
+    let isoTimes = [];
+    for (var index = 0; index < times.length; index++) {
+      isoTimes.push(times[index].toISOString().slice(0, 19).replace('T', ' '));      
+    }
+    return isoTimes;
+  }
+
+  isConnected(): boolean {
+    let conntype = this.network.type;
+    return conntype && conntype !== 'unknown' && conntype !== 'none';
   }
 
 }
