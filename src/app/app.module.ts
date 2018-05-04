@@ -18,6 +18,7 @@ import { MainPage } from '../pages/main/main';
 import { DetailsPage } from '../pages/details/details';
 import { TimelinePage } from '../pages/timeline/timeline';
 import { TimechartPage } from '../pages/timechart/timechart';
+import { PopoverPage } from '../pages/popover/popover';
 
 import { ChartModule } from 'angular2-highcharts';
 import * as HighCharts from 'highcharts';
@@ -35,7 +36,8 @@ XRange(HighCharts);
     MainPage,
     DetailsPage,
     TimelinePage,
-    TimechartPage
+    TimechartPage,
+    PopoverPage
   ],
   imports: [
     BrowserModule,
@@ -52,7 +54,8 @@ XRange(HighCharts);
     MainPage,
     DetailsPage,
     TimelinePage,
-    TimechartPage
+    TimechartPage,
+    PopoverPage
   ],
   providers: [
     StatusBar,

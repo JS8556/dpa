@@ -28,8 +28,11 @@ export class HomePage {
       if(this.ordersSync.length > 0)
       {
         this.dialogs.alert('Unsynchronized data, wait for synchronization')
-        .then(() => console.log('Unsynchronized data'));
-        this.WDProvider.postUsersSync(this.ordersSync);
+        .then(() => {
+          console.log('Unsynchronized data');
+          this.WDProvider.postUsersSync(this.ordersSync);
+        });
+        
       }
     });
   }
@@ -80,18 +83,29 @@ export class HomePage {
   }
 
   login1(id){
-    this.WDProvider.getUser(id)
-    .then(data => {
-      this.user = data;
-      console.log(this.user);
-      this.dialogs.confirm('Welcome ' + this.user.name + ' ' + this.user.surname, 'Confirm', ['OK'])
-      .then(() => {
-        console.log('OK ID');
-        this.navCtrl.push(MainPage, {
-          user:this.user
+    if(this.isConnected()){
+      this.WDProvider.getUser(id)
+      .then(data => {
+        this.user = data;
+        console.log(this.user);
+        this.dialogs.confirm('Welcome ' + this.user.name + ' ' + this.user.surname, 'Confirm', ['OK'])
+        .then(() => {
+          console.log('OK ID');
+          this.navCtrl.push(MainPage, {
+            user:this.user
+          });
         });
       });
-    });
+    }else{
+      this.dialogs.alert('No network connection')
+      .then(() => console.log('No network connection'));
+    }
+
+    
+  }
+
+  login2(){
+    this.user = JSON.parse('{ "id": 1, "firstname": "Jaja", "surname": "Maly", "orders": [] }');
   }
 
   isConnected(): boolean {
