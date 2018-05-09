@@ -4,6 +4,11 @@
       <ion-title>
         {{order.name}}
       </ion-title>
+      <ion-buttons end>
+        <button ion-button icon-only (click)="presentPopover($event)">
+          <ion-icon name="menu"></ion-icon>
+        </button>
+      </ion-buttons>    
     </ion-navbar>
 </ion-header>
   
@@ -13,7 +18,7 @@
   <ion-card>
     <ion-card-content>
       <ion-card-title>
-        Processed time
+        Čas zpracování
       </ion-card-title>
       <ion-list>
         <ion-item text-wrap *ngFor="let time of order.timeS; let i=index" [color]="order?.timeE[i] ? 'tgreen' : 'tyellow'">
@@ -29,7 +34,7 @@
           </ion-row>
         </ion-item>
       </ion-list>
-      <button ion-button (click)="showChart()">Chart</button>
+      <button ion-button (click)="showChart()">Graf</button>
     </ion-card-content>
   </ion-card>
 
@@ -38,7 +43,7 @@
       <button ion-button block disabled="{{bDis}}" (click)="changeTimeOrder()">{{bLabel}}</button>
     </ion-col>
     <ion-col>
-      <button ion-button block (click)="finishOrder()">Finish</button>
+      <button ion-button block (click)="finishOrder()">Ukončit</button>
     </ion-col>  
   </ion-row>
   

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
-import { Dialogs } from '@ionic-native/dialogs';
 
 
 @Component({
@@ -14,7 +13,7 @@ export class TimechartPage {
   private order:any;
   chartOptions:any;
 
-  constructor(public navCtrl: NavController, private dialogs:Dialogs, public params:NavParams) {
+  constructor(public navCtrl: NavController, public params:NavParams) {
     this.data = params.get('data');
     this.order = params.get('order');
     this.dataF = [{
@@ -32,7 +31,7 @@ export class TimechartPage {
           type: 'xrange'
         },
         title: {
-            text: 'Timeline chart'
+            text: 'Timeline graf'
         },
         xAxis: {
             type: 'datetime'

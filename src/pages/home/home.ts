@@ -27,7 +27,7 @@ export class HomePage {
       this.ordersSync = val;
       if(this.ordersSync.length > 0)
       {
-        this.dialogs.alert('Unsynchronized data, wait for synchronization')
+        this.dialogs.alert('Nesynchronizovaná data, počkejte na synchronizaci')
         .then(() => {
           console.log('Unsynchronized data');
           this.WDProvider.postUsersSync(this.ordersSync);
@@ -88,7 +88,7 @@ export class HomePage {
       .then(data => {
         this.user = data;
         console.log(this.user);
-        this.dialogs.confirm('Welcome ' + this.user.name + ' ' + this.user.surname, 'Confirm', ['OK'])
+        this.dialogs.confirm('Vítejte ' + this.user.firstname + ' ' + this.user.surname, 'Potvrdit', ['OK'])
         .then(() => {
           console.log('OK ID');
           this.navCtrl.push(MainPage, {
@@ -97,7 +97,7 @@ export class HomePage {
         });
       });
     }else{
-      this.dialogs.alert('No network connection')
+      this.dialogs.alert('Síť nenalezena')
       .then(() => console.log('No network connection'));
     }
 

@@ -28,7 +28,7 @@ export class PopoverPage {
             let ordersSync = val;
             if(ordersSync.length > 0)
             {
-              this.dialogs.alert('Unsynchronized data, wait for synchronization')
+              this.dialogs.alert('Nesynchronizovaná data, počkejte na synchronizaci')
               .then(() => {
                   console.log('Unsynchronized data');
                   this.WDProvider.postUsersSync(ordersSync);
@@ -37,7 +37,7 @@ export class PopoverPage {
             }
           });
     }else{
-        this.dialogs.alert('No network connection')
+        this.dialogs.alert('Síť nenalezena')
         .then(() => {
             console.log('No network connection');
             

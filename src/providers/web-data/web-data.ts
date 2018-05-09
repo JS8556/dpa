@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Dialogs } from '@ionic-native/dialogs';
 import { Observable } from 'rxjs/Observable';
 import { ObjStorageProvider } from '../obj-storage/obj-storage';
+import { HttpHeaders } from '@angular/common/http';
 
 
 /*
@@ -13,7 +14,7 @@ import { ObjStorageProvider } from '../obj-storage/obj-storage';
 */
 @Injectable()
 export class WebDataProvider {
-
+ 
   constructor(public http: HttpClient, private dialogs:Dialogs, private storage: ObjStorageProvider) {
     console.log('Hello WebDataProvider Provider');
   }
@@ -25,21 +26,26 @@ export class WebDataProvider {
         resolve(data);
       }, (err) => {
         console.log(err);
-        this.dialogs.alert('Login error')
+        this.dialogs.alert('Error - přihlášení')
         .then(() => console.log('Login error'));
       });
     });
   }
 
   postUser(order) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+      })
+    };
     return new Promise((resolve, reject) => {
-      this.http.post('https://app.wista.cz/api/v1/mon/users/orders', JSON.stringify(order))
+      this.http.post('https://app.wista.cz/api/v1/mon/users/orders', JSON.stringify(order), httpOptions)
         .subscribe(res => {
           resolve(res);
         }, (err) => {
           reject(err);
           console.log(err);
-          this.dialogs.alert('Post error')
+          this.dialogs.alert('Error - zakázka')
           .then(() => console.log('Post error'));
         });
     });
@@ -55,12 +61,12 @@ export class WebDataProvider {
       }
       Observable.forkJoin(allPosts).subscribe(res => {    
         updatedOrders = res;
-        this.dialogs.alert('Synchronization successful')
+        this.dialogs.alert('Synchronizace úspěšná')
         .then(() => console.log('Synchronization successful'));
         this.storage.deleteToSync();
       },
        (err:any) => {
-        this.dialogs.alert('Synchronization failed')
+        this.dialogs.alert('Synchronizace neúspěšná')
         .then(() => console.log('Synchronization failed'));
       });
     }

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
-import { Dialogs } from '@ionic-native/dialogs';
 
 
 @Component({
@@ -12,7 +11,7 @@ export class DetailsPage {
   private order:any;
 
 
-  constructor(public navCtrl: NavController, private dialogs:Dialogs, public params:NavParams) {
+  constructor(public navCtrl: NavController, public params:NavParams) {
     this.order = params.get('order');
   }
 

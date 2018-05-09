@@ -8,6 +8,9 @@ import { Network } from '@ionic-native/network';
 
 import { NgZone } from '@angular/core';
 
+import { PopoverController } from 'ionic-angular';
+import { PopoverPage } from '../popover/popover';
+
 @Component({
   selector: 'page-timeline',
   templateUrl: 'timeline.html'
@@ -24,7 +27,7 @@ export class TimelinePage {
 
   private zone:any;
 
-  constructor(public navCtrl: NavController, private dialogs:Dialogs, public params:NavParams, private storageProvider: ObjStorageProvider, private network: Network, private WDProvider: WebDataProvider) {
+  constructor(public navCtrl: NavController, private dialogs:Dialogs, public params:NavParams, private storageProvider: ObjStorageProvider, private network: Network, private WDProvider: WebDataProvider, public popoverCtrl: PopoverController) {
     this.order = params.get('order');
     this.user = params.get('user');
     this.setBLabel();
@@ -41,7 +44,7 @@ export class TimelinePage {
     if(this.order.timeS.length == this.order.timeE.length){
       this.bLabel = 'Start';
     }else{
-      this.bLabel = 'Pause';
+      this.bLabel = 'Zastavit';
     }
   }
 
@@ -101,7 +104,7 @@ export class TimelinePage {
   }
 
   finishOrder(){
-    this.dialogs.confirm('Finish order?', 'Confirm', ['OK', 'Cancel'])
+    this.dialogs.confirm('Ukončit zpracování?', 'Potvrdit', ['OK', 'Zrušit'])
     .then(() => {
       this.zone.run(() => {
         if(this.order.timeS.length == this.order.timeE.length){
@@ -134,7 +137,7 @@ export class TimelinePage {
 
 
   deleteTime(i:number){
-    alert('Deleting time');
+    alert('Mazání času');
     this.zone.run(() => {
       this.order.timeS.splice(i, 1);
       if(typeof this.order.timeE[i] === 'undefined') {
@@ -167,6 +170,13 @@ export class TimelinePage {
       isoTimes.push(times[index].toISOString().slice(0, 19).replace('T', ' '));      
     }
     return isoTimes;
+  }
+
+  presentPopover(myEvent) {
+    let popover = this.popoverCtrl.create(PopoverPage);
+    popover.present({
+      ev: myEvent
+    });
   }
 
   isConnected(): boolean {

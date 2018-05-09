@@ -3,9 +3,11 @@
     <ion-title>
       {{nameUser}}
     </ion-title>
-    <button ion-button icon-only (click)="presentPopover($event)">
-      <ion-icon name="menu"></ion-icon>
-    </button>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="presentPopover($event)">
+        <ion-icon name="menu"></ion-icon>
+      </button>
+    </ion-buttons>    
   </ion-navbar>
 </ion-header>
 
@@ -39,7 +41,7 @@
         <ion-item-options side="right">
           <button ion-button (click)="deleteOrder(order)" color="danger">
             <ion-icon name="trash"></ion-icon>
-            DELETE
+            SMAZAT
           </button>
         </ion-item-options>
         <ion-item-options side="left">
@@ -49,7 +51,7 @@
           </button>
           <button ion-button (click)="timelineOrder(order)" color="cgreen">
             <ion-icon name="clock"></ion-icon>
-            PROCESS
+            ZPRACOVÁNÍ
           </button>
         </ion-item-options>
       </ion-item-sliding>     
@@ -57,6 +59,6 @@
 
   <button ion-button full (click)="scanCode()" color="primary">
     <!--<ion-icon name="add"></ion-icon>-->
-    SCAN
+    SKEN QR
   </button>
 </ion-content>

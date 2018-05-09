@@ -11,7 +11,7 @@ import { TimelinePage } from '../timeline/timeline';
 
 import { NgZone } from '@angular/core';
 import { PopoverController } from 'ionic-angular';
-import { PopoverPage } from '../popover/popover'
+import { PopoverPage } from '../popover/popover';
 
 
 @Component({
@@ -25,13 +25,14 @@ export class MainPage {
   private scan:any;
   private scanOrder:any;
 
-  private zone:any;  
+  private zone:any;
 
   constructor(public navCtrl: NavController, private dialogs:Dialogs, public params:NavParams, private qrScanner: QRScanner, private storageProvider: ObjStorageProvider, private network: Network, private WDProvider: WebDataProvider, public popoverCtrl: PopoverController) {
     this.user = params.get('user');
     this.nameUser = this.user.firstname + ' ' + this.user.surname;
     this.zone = new NgZone({ enableLongStackTrace: false });
     this.setDateTimes();
+    this.filterOrders();
   }
 
   detailsOrder(order){
@@ -56,7 +57,7 @@ export class MainPage {
       if (status.authorized) {
         // camera permission was granted
 
-        let ionApp = <HTMLElement>document.getElementsByTagName('ion-app')[0];
+        //let ionApp = <HTMLElement>document.getElementsByTagName('ion-app')[0];
         // start scanning
         let scanSub = this.qrScanner.scan().subscribe((text: string) => {
           console.log('Scanned something', text);
@@ -69,13 +70,13 @@ export class MainPage {
           scanSub.unsubscribe(); // stop scanning
           //ionApp.style.display = 'block';
 
-          this.dialogs.confirm('Order: ' + this.scanOrder.name + ' ' + this.scanOrder.customer, 'Confirm', ['OK', 'Cancel'])
+          this.dialogs.confirm('Zakázka: ' + this.scanOrder.name + ' ' + this.scanOrder.customer, 'Potvrdit', ['OK', 'Zrušit'])
           .then((bId) => {
             if(bId == 1){
               //kontrola jestli uz zakazka neni zpracovavana uzivatelem
               let index = this.user.orders.findIndex(x => x.id == this.scanOrder.id);
               //pokud neni tak
-              if(index > -1){
+              if(index < 0){
                 this.zone.run(() => {
                   this.user.orders.push(this.scanOrder);
                   this.storageProvider.addObj(this.user.id, this.user);                
@@ -95,7 +96,7 @@ export class MainPage {
                   this.storageProvider.setToSync(orderProc);
                 }
               }else{//pokuj ji uz uzivatel zpracovava
-                this.dialogs.alert('You are already processing this order')
+                this.dialogs.alert('Tuto zakázku již zpracováváte')
                 .then(() => console.log('You are already processing this order'));
               }
               
@@ -123,7 +124,7 @@ export class MainPage {
   }
 
   deleteOrder(order){
-    alert('Deleting order'); 
+    alert('Mazání zakázky'); 
     this.zone.run(() => {
       this.user.orders = this.user.orders.filter(obj => obj !== order);
     });
@@ -145,7 +146,7 @@ export class MainPage {
   }
 
   setDateTimes(){
-    if(this.user.orders.length > 0){
+    if(this.user.orders.length > 0 && this.user.orders[0].hasOwnProperty('timeS')){
       for (var index = 0; index < this.user.orders.length; index++) {
         let newTimeS: any[];
         let newTimeE: any[];
@@ -160,6 +161,12 @@ export class MainPage {
         this.user.orders[index].timeS = newTimeS;
         this.user.orders[index].timeE = newTimeE;
       }
+    }
+  }
+
+  filterOrders(){
+    if(this.user.orders.length > 0 && this.user.orders[0].hasOwnProperty('displayed')){
+      this.user.orders = this.user.orders.filter(order => order.displayed == 1);
     }
   }
 
