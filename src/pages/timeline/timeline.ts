@@ -89,8 +89,8 @@ export class TimelinePage {
     for (var index = 0; index < this.order.timeE.length; index++) {
       this.data.push(
         {
-          x: new Date(this.order.timeS[index]).getTime(),
-          x2: new Date(this.order.timeE[index]).getTime(),
+          x: new Date(this.order.timeS[index]).getTime() + 60*60*1000*2,
+          x2: new Date(this.order.timeE[index]).getTime() + 60*60*1000*2,
           y: 0,
           partialFill: 1
         }
@@ -151,7 +151,7 @@ export class TimelinePage {
     let orderProc = {
       order_id: this.order.id,
       user_id: this.user.id,
-      finished: 0,
+      finished: this.order.finished,
       displayed: 1,
       timeS: this.prepareTimes(this.order.timeS),
       timeE: this.prepareTimes(this.order.timeE)
@@ -166,8 +166,10 @@ export class TimelinePage {
 
   prepareTimes(times:any[]){
     let isoTimes = [];
+    let timesH = [];
     for (var index = 0; index < times.length; index++) {
-      isoTimes.push(times[index].toISOString().slice(0, 19).replace('T', ' '));      
+      timesH.push(new Date(times[index]).setHours(new Date(times[index]).getHours()+2));
+      isoTimes.push(new Date(timesH[index]).toISOString().slice(0, 19).replace('T', ' '));      
     }
     return isoTimes;
   }

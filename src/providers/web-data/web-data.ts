@@ -45,7 +45,7 @@ export class WebDataProvider {
         }, (err) => {
           reject(err);
           console.log(err);
-          this.dialogs.alert('Error - zakázka')
+          this.dialogs.alert('Error - nepodařilo se poslat zakázku')
           .then(() => console.log('Post error'));
         });
     });
@@ -55,6 +55,7 @@ export class WebDataProvider {
     let allPosts = [];
     let updatedOrders = [];
 
+    console.log(orders);
     if(orders.length > 0){
       for(let i = 0; i < orders.length; i++) {
        allPosts.push(this.postUser(orders[i]));                

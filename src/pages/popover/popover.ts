@@ -34,6 +34,12 @@ export class PopoverPage {
                   this.WDProvider.postUsersSync(ordersSync);
                 });
               
+            }else{
+              this.dialogs.alert('Žádná data k synchronizaci')
+              .then(() => {
+                  console.log('No sync data');
+
+                });
             }
           });
     }else{

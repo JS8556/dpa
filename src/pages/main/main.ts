@@ -129,17 +129,21 @@ export class MainPage {
       this.user.orders = this.user.orders.filter(obj => obj !== order);
     });
     this.storageProvider.deleteObj(this.user.id, this.user);
-
+    
     let orderProc = {
-      order_id: this.scanOrder.id,
+      order_id: order.id,
       user_id: this.user.id,
       finished: 0,
       displayed: 0,
       timeS: [],
       timeE: []
     };
-    if(this.isConnected()){
-      this.WDProvider.postUser(orderProc);
+    if(this.isConnected()){     
+      this.WDProvider.postUser(orderProc).then((res) => {
+        
+      },(err) => {
+
+      });
     }else{
       this.storageProvider.setToSync(orderProc);
     }

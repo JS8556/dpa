@@ -60,7 +60,7 @@ export class ObjStorageProvider {
           indexDel = index;
         }        
       }
-      if(indexDel > 0){
+      if(indexDel > -1){
         ordersToSync.splice(indexDel, 1);
         ordersToSync.push(order);
       }else{
