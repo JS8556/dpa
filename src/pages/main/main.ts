@@ -57,7 +57,7 @@ export class MainPage {
       if (status.authorized) {
         // camera permission was granted
 
-        //let ionApp = <HTMLElement>document.getElementsByTagName('ion-app')[0];
+        let ionApp = <HTMLElement>document.getElementsByTagName('ion-app')[0];
         // start scanning
         let scanSub = this.qrScanner.scan().subscribe((text: string) => {
           console.log('Scanned something', text);
@@ -68,46 +68,66 @@ export class MainPage {
 
           this.qrScanner.hide(); // hide camera preview
           scanSub.unsubscribe(); // stop scanning
-          //ionApp.style.display = 'block';
-
-          this.dialogs.confirm('Zakázka: ' + this.scanOrder.name + ' ' + this.scanOrder.customer, 'Potvrdit', ['OK', 'Zrušit'])
-          .then((bId) => {
-            if(bId == 1){
-              //kontrola jestli uz zakazka neni zpracovavana uzivatelem
-              let index = this.user.orders.findIndex(x => x.id == this.scanOrder.id);
-              //pokud neni tak
-              if(index < 0){
-                this.zone.run(() => {
-                  this.user.orders.push(this.scanOrder);
-                  this.storageProvider.addObj(this.user.id, this.user);                
-                });
-  
-                let orderProc = {
-                  order_id: this.scanOrder.id,
-                  user_id: this.user.id,
-                  finished: 0,
-                  displayed: 1,
-                  timeS: [],
-                  timeE: []
-                };
-                if(this.isConnected()){
-                  this.WDProvider.postUser(orderProc);
-                }else{
-                  this.storageProvider.setToSync(orderProc);
+          ionApp.style.display = 'block';
+          if(this.scanOrder.hasOwnProperty('id') && this.scanOrder.hasOwnProperty('name') && this.scanOrder.hasOwnProperty('customer'))
+          {
+            this.dialogs.confirm('Zakázka: ' + this.scanOrder.name + ' ' + this.scanOrder.customer, 'Potvrdit', ['OK', 'Zrušit'])
+            .then((bId) => {
+              if(bId == 1){
+                //kontrola jestli uz zakazka neni zpracovavana uzivatelem
+                let index = this.user.orders.findIndex(x => x.id == this.scanOrder.id);
+                //pokud neni tak
+                if(index < 0){
+                  this.zone.run(() => {
+                    this.user.orders.push(this.scanOrder);
+                    this.storageProvider.addObj(this.user.id, this.user);                
+                  });
+                  let orderProc = {
+                    order_id: this.scanOrder.id,
+                    user_id: this.user.id,
+                    finished: 0,
+                    displayed: 1,
+                    timeS: [],
+                    timeE: []
+                  };
+                  if(this.isConnected()){
+                    this.WDProvider.postUser(orderProc).then((res) => {
+                      /*this.zone.run(() => {
+                        this.user.orders.push(res);
+                        console.log(res);
+                        this.storageProvider.addObj(this.user.id, this.user);                
+                      });*/
+                    });
+                  }else{
+                    /*this.zone.run(() => {
+                      this.user.orders.push(this.scanOrder);
+                      this.storageProvider.addObj(this.user.id, this.user);                
+                    });*/
+                    this.storageProvider.setToSync(orderProc);
+                  }
+                }else{//pokuj ji uz uzivatel zpracovava
+                  this.dialogs.alert('Tuto zakázku již zpracováváte')
+                  .then(() => console.log('You are already processing this order'));
                 }
-              }else{//pokuj ji uz uzivatel zpracovava
-                this.dialogs.alert('Tuto zakázku již zpracováváte')
-                .then(() => console.log('You are already processing this order'));
+                
               }
-              
-            }
-          });
+            });
+          }else{
+            this.dialogs.alert('Neplatný kód')
+              .then(() => console.log('Neplatný kód'));
+          }
+          
 
         });
 
-        //ionApp.style.display = 'none';
+        ionApp.style.display = 'none';
         // show camera preview
         this.qrScanner.show();
+        setTimeout(() => {
+          ionApp.style.display = "block";
+          scanSub.unsubscribe(); // stop scanning
+          this.qrScanner.hide();
+        }, 5000);
 
         // wait for user to scan something, then the observable callback will be called
 

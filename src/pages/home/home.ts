@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { LoginService } from '../../app/services/login.service';
 import { ObjStorageProvider } from '../../providers/obj-storage/obj-storage';
 import { Dialogs } from '@ionic-native/dialogs';
 import { Network } from '@ionic-native/network';
@@ -17,7 +16,7 @@ export class HomePage {
   private id:string = '';
   private user:any;
   private ordersSync:any[];
-  constructor(public navCtrl: NavController, private loginService:LoginService, private dialogs:Dialogs, private network: Network, private storageProvider: ObjStorageProvider, private WDProvider: WebDataProvider) {
+  constructor(public navCtrl: NavController, private dialogs:Dialogs, private network: Network, private storageProvider: ObjStorageProvider, private WDProvider: WebDataProvider) {
 
   }
 
@@ -35,51 +34,6 @@ export class HomePage {
         
       }
     });
-  }
-
-  login(id){
-    this.id = id;
-
-    console.log(this.isConnected());
-    if (this.isConnected()) { // JE PRIPOJENI
-      this.loginService.getUsers(this.id).subscribe(response => {
-        console.log(response);
-        this.user = response;
-  
-        if(this.user.id != null){     
-          this.dialogs.confirm('Welcome ' + this.user.firstname + ' ' + this.user.surname, 'Confirm', ['OK'])
-          .then(() => {
-            console.log('OK ID');
-            this.navCtrl.push(MainPage, {
-              user:this.user
-            });
-          });
-        }else{
-          this.dialogs.alert('ID not found')
-          .then(() => console.log('Wrong ID'));
-        }
-  
-      });
-    }
-    else{
-      // NENI PRIPOJENI
-      this.storageProvider.getObj(this.id).then((val:any) => {
-        console.log(val);
-        this.user = val;
-        
-        this.dialogs.confirm('Welcome ' + this.user.firstname + ' ' + this.user.surname, 'Confirm', ['OK'])
-        .then(() => {
-          console.log('OK ID');
-          this.navCtrl.push(MainPage, {
-            user:this.user
-          });
-        });
-
-      });
-
-      
-    }   
-
   }
 
   login1(id){
@@ -102,10 +56,6 @@ export class HomePage {
     }
 
     
-  }
-
-  login2(){
-    this.user = JSON.parse('{ "id": 1, "firstname": "Jaja", "surname": "Maly", "orders": [] }');
   }
 
   isConnected(): boolean {

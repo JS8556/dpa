@@ -8,7 +8,6 @@ import { Dialogs } from '@ionic-native/dialogs';
 import { QRScanner } from '@ionic-native/qr-scanner';
 import { HttpModule } from '@angular/http';
 import { IonicStorageModule } from '@ionic/storage';
-import { LoginService } from './services/login.service'
 import { Network } from '@ionic-native/network';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -63,7 +62,6 @@ XRange(HighCharts);
     Dialogs,
     QRScanner,
     Network,
-    LoginService,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     ObjStorageProvider,
     WebDataProvider

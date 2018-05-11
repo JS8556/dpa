@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Dialogs } from '@ionic-native/dialogs';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/forkJoin';
 import { ObjStorageProvider } from '../obj-storage/obj-storage';
 import { HttpHeaders } from '@angular/common/http';
 

@@ -22,7 +22,7 @@ export class MyApp {
       splashScreen.hide();
 
       let disconnectSubscription = network.onDisconnect().subscribe(() => {
-        console.log('network was disconnected :-(');
+        console.log('network was disconnected');
         this.dialogs.alert('Síť nenalezena, pracujete v offline režimu')
           .then(() => {
               
@@ -31,20 +31,12 @@ export class MyApp {
       });
       let connectSubscription = network.onConnect().subscribe(() => {
         console.log('network connected!');
-        // We just got a connection but we need to wait briefly
-         // before we determine the connection type. Might need to wait.
-        // prior to doing any api requests as well.
         this.dialogs.alert('Síť nalezena, pracujete v online režimu')
           .then(() => {
             setTimeout(() => {
-              if (network.type === 'wifi') {
-                console.log('we got a wifi connection, woohoo!');
-                this.synchronize();
-              }
+              this.synchronize();
             }, 3000);
-
-            });
-        
+          });        
       });
     });
   }
