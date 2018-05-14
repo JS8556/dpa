@@ -78,10 +78,7 @@ export class MainPage {
                 let index = this.user.orders.findIndex(x => x.id == this.scanOrder.id);
                 //pokud neni tak
                 if(index < 0){
-                  this.zone.run(() => {
-                    this.user.orders.push(this.scanOrder);
-                    this.storageProvider.addObj(this.user.id, this.user);                
-                  });
+
                   let orderProc = {
                     order_id: this.scanOrder.id,
                     user_id: this.user.id,
@@ -92,17 +89,17 @@ export class MainPage {
                   };
                   if(this.isConnected()){
                     this.WDProvider.postUser(orderProc).then((res) => {
-                      /*this.zone.run(() => {
-                        this.user.orders.push(res);
+                      this.zone.run(() => {
+                        this.user.orders.push(res[0]);
                         console.log(res);
                         this.storageProvider.addObj(this.user.id, this.user);                
-                      });*/
+                      });
                     });
                   }else{
-                    /*this.zone.run(() => {
+                    this.zone.run(() => {
                       this.user.orders.push(this.scanOrder);
                       this.storageProvider.addObj(this.user.id, this.user);                
-                    });*/
+                    });
                     this.storageProvider.setToSync(orderProc);
                   }
                 }else{//pokuj ji uz uzivatel zpracovava

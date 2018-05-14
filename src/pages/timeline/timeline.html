@@ -24,7 +24,7 @@
         <ion-item text-wrap *ngFor="let time of order.timeS; let i=index" [color]="order?.timeE[i] ? 'tgreen' : 'tyellow'">
           <ion-row>
             <ion-col>
-              {{time | date: 'dd/MM/yy H:mm' }} <br />to <br /><div *ngIf="order?.timeE[i]">{{order.timeE[i] | date: 'dd/MM/yy H:mm' }}</div>
+              {{time | date: 'dd/MM/yy H:mm' }} <br />do <br /><div *ngIf="order?.timeE[i]">{{order.timeE[i] | date: 'dd/MM/yy H:mm' }}</div>
             </ion-col>
             <ion-col col-auto>
               <button ion-button small (click)="deleteTime(i)" color="danger">
